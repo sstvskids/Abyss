@@ -94,6 +94,9 @@ run(function()
     })
 end)
 
+-- blatant
+tabs.Combat:CreateSection('Blatant')
+
 -- misc
 tabs.Misc:CreateSection('Misc')
 
