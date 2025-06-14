@@ -12,13 +12,12 @@ end
 local function getURL(path: string, urltype: string, read: boolean)
     read = read or false
     local url = game:HttpGet('https://raw.githubusercontent.com/'..urltype..'/'..httpService:JSONDecode(game:HttpGet('https://api.github.com/repos/'..urltype..'/commits'))[1].sha..'/'..path, true)
-    local pathh = string.find('bridge.lua') and 'games/bridge.lua' or path
-    if not (isfile('abyss.lol/'..pathh) and shared.AbyssDeveloper) then
-        writefile('abyss.lol/'..pathh, url)
+    if not (isfile('abyss.lol/'..path) and shared.AbyssDeveloper) then
+        writefile('abyss.lol/'..path, url)
     end
     
-    return not shared.AbyssDeveloper and read == true and url or read == true and readfile('abyss.lol/games/'..pathh)
+    return not shared.AbyssDeveloper and read == true and url or read == true and readfile('abyss.lol/'..path)
 end
 
 getURL('installer.lua', 'sstvskids/Abyss')
-loadstring(getURL('bridge.lua', 'sstvskids/Abyss', true))
+loadstring(getURL('games/bridge.lua', 'sstvskids/Abyss', true))
