@@ -18,7 +18,7 @@ local function getURL(path: string, urltype: string)
 end
 
 local Rayfield = loadstring(getURL('source.lua', 'SiriusSoftwareLtd/Rayfield'))()
-local entity = loadstring(getURL('libraries/entity.lua', '7GrandDadPGN/VapeV4ForRoblox'))()
+local entitylib = loadstring(getURL('libraries/entity.lua', '7GrandDadPGN/VapeV4ForRoblox'))()
 local bd = {}
 
 -- init.lua
