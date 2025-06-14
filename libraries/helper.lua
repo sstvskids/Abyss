@@ -2,24 +2,14 @@ local cloneref = (not identifyexecutor() == 'Xeno' and cloneref) or function(val
 local players = cloneref(game:GetService('Players'))
 local lplr = players.LocalPlayer
 
-local entity = {
-    isAlive = false,
-    character = lplr.Character,
-    list = {}
-}
-
-entitylib.getplayers = function()
-    for _,v in players:getplayers() do
-        if v ~= lplr then
-            table.insert(entity.list, v)
-        end
-    end
+local bdhelper = {}
+bdhelper.isAlive = function(plr)
+    plr = plr or lplr
+    return plr.Character and character:FindFirstChild('Head') and character:FindFirstChild('Humanoid') and character.Humanoid.Health > 0
 end
 
-repeat task.wait()
-    if entity.isAlive == false and entity.character.Humanoid then
-        entity.isAlive = true
-    end
-until shared.AbyssLoaded == false
+bdhelper.getClosest() = function()
+    return nil
+end
 
 return entity
