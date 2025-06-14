@@ -9,9 +9,6 @@ local function getURL(path: string, urltype: string)
     local pathh = string.find(path, 'source.lua') and path or 'entity.lua'
     if not (isfile('abyss.lol/libraries/'..pathh) and shared.AbyssDeveloper) then
         writefile('abyss.lol/libraries/'..pathh, url)
-    else
-        delfile('abyss.lol/libraries/'..pathh)
-        writefile('abyss.lol/libraries/'..pathh, url)
     end
     
     return not shared.AbyssDeveloper and url or readfile('abyss.lol/libraries/'..pathh)
