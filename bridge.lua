@@ -110,10 +110,13 @@ run(function()
     Uninject = tabs.Misc:CreateButton({
         Name = "Uninject",
         Callback = function()
+            bd = nil
             entity = nil
+            shared.AbyssLoaded = nil
             Rayfield:Destroy()
         end,
     })
 end)
 
 Rayfield:LoadConfiguration()
+shared.AbyssLoaded = true
