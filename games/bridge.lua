@@ -46,26 +46,6 @@ local Window = Rayfield:CreateWindow({
 })
 
 run(function()
-    bd.GetRemote = function(name: RemoteEvent | RemoteFunction): RemoteEvent | RemoteFunction
-        local remote
-        for _, v in pairs(game:GetDescendants()) do
-            if (v:IsA('RemoteEvent') or v:IsA('RemoteFunction')) and v.Name == name then
-                remote = v
-                break
-            end
-        end
-        if name == nil then return Instance.new('RemoteEvent') end
-        return remote
-    end
-    bd.Remotes = {
-        AttackPlayer = bd.GetRemote('AttackPlayerWithSword'),
-		BlockSword = bd.GetRemote('ToggleBlockSword'),
-		EnterQueue = bd.GetRemote('EnterQueue'),
-        PlaceBlock = bd.GetRemote('PlaceBlock')
-    }
-end)
-
-run(function()
 	local oldstart = entitylib.start
 	local function teamcheck(ent)
 		local suc, res = pcall(function()
@@ -103,6 +83,30 @@ end)
 
 entitylib.start()
 
+local function getTool()
+    return lplr.Character and lplr.Character:FindFirstChildWhichIsA('Tool', true) or nil
+end
+
+run(function()
+    bd.GetRemote = function(name: RemoteEvent | RemoteFunction): RemoteEvent | RemoteFunction
+        local remote
+        for _, v in pairs(game:GetDescendants()) do
+            if (v:IsA('RemoteEvent') or v:IsA('RemoteFunction')) and v.Name == name then
+                remote = v
+                break
+            end
+        end
+        if name == nil then return Instance.new('RemoteEvent') end
+        return remote
+    end
+    bd.Remotes = {
+        AttackPlayer = bd.GetRemote('AttackPlayerWithSword'),
+		BlockSword = bd.GetRemote('ToggleBlockSword'),
+		EnterQueue = bd.GetRemote('EnterQueue'),
+        PlaceBlock = bd.GetRemote('PlaceBlock')
+    }
+end)
+
 local tabs = {
     Combat = Window:CreateTab('Combat', 'swords'),
     Blatant = Window:CreateTab('Blatant', 'skull'),
@@ -139,10 +143,100 @@ end)
 -- blatant
 tabs.Blatant:CreateSection('Blatant')
 
---[[run(function()
+-- me when i got TOO lazy
+
+run(function()
+    local Criticals
+    Criticals = tabs.Blatant.CreateToggle({
+        Name = 'Criticals',
+        CurrentValue = false,
+        Callback = function(val)
+            Criticals.Value = val
+        end,
+        Flag = 'Criticals'
+    })
+end)
+
+run(function()
     local Aura
     local Range
-end)]]
+    local Max
+    local AttackDelay, SwingDelay = tick(), tick()
+    Aura = tabs.Blatant.CreateToggle({
+        Name = 'Aura',
+        CurrentValue = false,
+        Callback = function(val)
+            if val then
+                repeat
+                    local tool = getTool()
+                    local attacked = {}
+                    if tool and tool:HasTag('Sword') then
+                        local plrs = entitylib.AllPosition({
+							Range = Range.Value,
+							Wallcheck = nil,
+							Part = 'RootPart',
+							Players = true,
+							NPCs = true,
+							Limit = Max.Value
+						})
+	
+						task.spawn(function()
+							if #plrs > 0 then
+                                local selfpos = entitylib.character.RootPart.Position
+								local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
+
+								task.spawn(function()
+									if AutoBlock.Enabled and tool then
+										bd.Remotes.BlockSword:InvokeServer(true, tool.Name)
+									end
+								end)
+
+                                task.spawn(function()
+                                    for _,v in plrs do
+                                        local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
+                                        table.insert(attacked, {
+											Entity = v,
+											Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
+										})
+
+                                        if SwingDelay < tick() and (tool and tool:HasTag('Sword')) then
+                                            SwingDelay = tick() + 0.25
+											entitylib.character.Humanoid.Animator:LoadAnimation(getTool().Animations.Swing):Play()
+										end
+
+                                        if AttackDelay < tick() then
+                                            AttackDelay = tick()
+                                            bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
+                                        end
+                                    end
+                                end)
+                            end
+                        end)
+                    end
+                until not val
+            end
+        end,
+        Flag = 'Aura'
+    })
+    Range = tabs.Blatant:CreateSlider({
+        Name = 'Range',
+        Range = {0, 18},
+        CurrentValue = 18,
+        Callback = function(val)
+            Range.Value = val
+        end,
+        Flag = 'Range',
+    })
+    Max = tabs.Blatant:CreateSlider({
+        Name = 'Limit',
+        Range = {0, 10},
+        CurrentValue = 10,
+        Callback = function(val)
+            Range.Value = val
+        end,
+        Flag = 'Max',
+    })
+end)
 
 -- misc
 tabs.Misc:CreateSection('Misc')
