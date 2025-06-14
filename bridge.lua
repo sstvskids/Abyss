@@ -4,12 +4,6 @@ local cloneref = (not identifyexecutor() == 'Xeno' and cloneref) or function(val
 local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
 local run = function(func) func() end
 
-for _, v in {'abyss.lol', 'abyss.lol/libraries', 'abyss.lol/configs'} do
-    if not isfolder(v) then
-        makefolder(v)
-    end
-end
-
 local function getURL(path: string, urltype: string)
     local url = game:HttpGet('https://raw.githubusercontent.com/'..urltype..'/'..httpService:JSONDecode(game:HttpGet('https://api.github.com/repos/'..urltype..'/commits'))[1].sha..'/'..path, true)
     local pathh = string.find(path, 'source.lua') and path or 'entity.lua'
