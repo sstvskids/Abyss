@@ -43,17 +43,15 @@ local Window = Rayfield:CreateWindow({
 
 run(function()
     bd.GetRemote = function(name: RemoteEvent | RemoteFunction): RemoteEvent | RemoteFunction
-        task.spawn(function()
-            local remote
-			for _, v in pairs(game:GetDescendants()) do
-				if (v:IsA('RemoteEvent') or v:IsA('RemoteFunction')) and v.Name == name then
-					remote = v
-					break
-				end
-			end
-            if name == nil then return Instance.new('RemoteEvent') end
-            return remote
-        end)
+        local remote
+        for _, v in pairs(game:GetDescendants()) do
+            if (v:IsA('RemoteEvent') or v:IsA('RemoteFunction')) and v.Name == name then
+                remote = v
+                break
+            end
+        end
+        if name == nil then return Instance.new('RemoteEvent') end
+        return remote
     end
     bd.Remotes = {
         AttackPlayer = bd.GetRemote('AttackPlayerWithSword'),
