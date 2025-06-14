@@ -7,9 +7,14 @@ local run = function(func) func() end
 local function getURL(path: string, urltype: string)
     local url = game:HttpGet('https://raw.githubusercontent.com/'..urltype..'/'..httpService:JSONDecode(game:HttpGet('https://api.github.com/repos/'..urltype..'/commits'))[1].sha..'/'..path, true)
     local pathh = string.find(path, 'source.lua') and path or 'entity.lua'
-    if not (isfile('abyss.lol/libraries/'..pathh) and shared.AbyssDeveloper) then
-        writefile('abyss.lol/libraries/'..pathh, url)
-    end
+    task.spawn(function()
+        if not (isfile('abyss.lol/libraries/'..pathh) and shared.AbyssDeveloper) then
+            writefile('abyss.lol/libraries/'..pathh, url)
+        else
+            delfile('abyss.lol/libraries/'..pathh)
+            writefile('abyss.lol/libraries/'..pathh, url)
+        end
+    end)
     
     return not shared.AbyssDeveloper and url or readfile('abyss.lol/libraries/'..pathh)
 end
