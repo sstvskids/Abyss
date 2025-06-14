@@ -12,14 +12,12 @@ end
 local function getURL(path: string, urltype: string, read: boolean)
     read = read or false
     local url = game:HttpGet('https://raw.githubusercontent.com/'..urltype..'/'..httpService:JSONDecode(game:HttpGet('https://api.github.com/repos/'..urltype..'/commits'))[1].sha..'/'..path, true)
-    task.spawn(function()
-        if not (isfile('abyss.lol/'..path) and shared.AbyssDeveloper) then
-            writefile('abyss.lol/'..path, url)
-        else
-            delfile('abyss.lol/'..path)
-            writefile('abyss.lol/'..path, url)
-        end
-    end)
+    if not (isfile('abyss.lol/libraries/'..pathh) and shared.AbyssDeveloper) then
+        writefile('abyss.lol/libraries/'..pathh, url)
+    else
+        delfile('abyss.lol/libraries/'..pathh)
+        writefile('abyss.lol/libraries/'..pathh, url)
+    end
     
     return not shared.AbyssDeveloper and read == true and url or read == true and readfile('abyss.lol/'..path)
 end
