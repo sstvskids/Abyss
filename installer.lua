@@ -17,7 +17,7 @@ local function getURL(path: string, urltype: string, read: boolean)
         writefile('abyss.lol/'..pathh, url)
     end
     
-    return read == true and readfile('abyss.lol/games/'..pathh)
+    return not shared.AbyssDeveloper and read == true and url or read == true and readfile('abyss.lol/games/'..pathh)
 end
 
 getURL('installer.lua', 'sstvskids/Abyss')
