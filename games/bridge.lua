@@ -5,6 +5,7 @@ local cloneref = (not identifyexecutor() == 'Xeno' and cloneref) or function(val
 local playersService = cloneref(game:GetService('Players'))
 local httpService = cloneref(game:GetService('HttpService'))
 local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
+local collectionService = cloneref(game:GetService('CollectionService'))
 local lplr = playersService.LocalPlayer
 
 local function getURL(path: string, urltype: string)
