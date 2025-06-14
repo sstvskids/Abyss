@@ -1,7 +1,6 @@
 if shared.AbyssLoaded == true then return end
 
 local cloneref = (not identifyexecutor() == 'Xeno' and cloneref) or function(val) return val end
-local shared = shared or getgenv()
 local httpService = cloneref(game:GetService('HttpService'))
 local function getURL(urltype: string, path: string)
     if urltype == 'MacLib' then
@@ -11,5 +10,4 @@ local function getURL(urltype: string, path: string)
     end
 end
 
-local CEHelper = getURL('Abyss', 'CEHelper.lua')
-local MacLib = getURL('MacLib')
+local MacLib = loadstring(getURL('MacLib'))()
