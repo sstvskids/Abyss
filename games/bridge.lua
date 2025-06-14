@@ -1,6 +1,7 @@
 if shared.AbyssLoaded == true then return end
 
 local cloneref = (not identifyexecutor() == 'Xeno' and cloneref) or function(val) return val end
+local httpService = cloneref(game:GetService('HttpService'))
 local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
 local run = function(func) func() end
 
