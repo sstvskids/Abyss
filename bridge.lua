@@ -6,8 +6,13 @@ local function getURL(urltype: string, path: string)
     if urltype == 'MacLib' then
         return game:HttpGet('https://github.com/biggaboy212/Maclib/releases/latest/download/maclib.txt')
     elseif urltype == 'Abyss' and path ~= nil then
-        return not shared.AbyssDev and game:HttpGet('https://github.com/sstvskids/'..httpService:JSONDecode(game:HttpGet('https://api.github.com/repos/sstvskids/Abyss/commits'))[1].sha..'/'..path, true) or readfile('Abyss/'..path)
+        return not shared.AbyssDev and game:HttpGet('https://github.com/sstvskids/'..httpService:JSONDecode(game:HttpGet('https://api.github.com/repos/sstvskids/Abyss/commits'))[1].sha..'/'..path, true) or readfile('abyss.lol/'..path)
     end
 end
 
 local MacLib = loadstring(getURL('MacLib'))()
+local entity = loadstring(getURL('Abyss', 'libraries/entity.lua'))()
+
+MacLib:SetFolder('abyss.lol')
+
+--// me when exploits fail to make loadstring so I have to step in
