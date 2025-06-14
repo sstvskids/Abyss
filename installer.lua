@@ -20,4 +20,4 @@ local function getURL(path: string, urltype: string, read: boolean)
 end
 
 getURL('installer.lua', 'sstvskids/Abyss')
-loadstring(getURL('games/bridge.lua', 'sstvskids/Abyss', true))
+return loadstring(getURL('games/bridge.lua', 'sstvskids/Abyss', true))()

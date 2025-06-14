@@ -1,9 +1,11 @@
 if shared.AbyssLoaded == true then return end
+local run = function(func) func() end
 
 local cloneref = (not identifyexecutor() == 'Xeno' and cloneref) or function(val) return val end
+local playersService = cloneref(game:GetService('Players'))
 local httpService = cloneref(game:GetService('HttpService'))
 local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
-local run = function(func) func() end
+local lplr = playersService.LocalPlayer
 
 local function getURL(path: string, urltype: string)
     local url = game:HttpGet('https://raw.githubusercontent.com/'..urltype..'/'..httpService:JSONDecode(game:HttpGet('https://api.github.com/repos/'..urltype..'/commits'))[1].sha..'/'..path, true)
@@ -62,6 +64,44 @@ run(function()
     }
 end)
 
+run(function()
+	local oldstart = entitylib.start
+	local function teamcheck(ent)
+		local suc, res = pcall(function()
+			if ent.Team or ent.Character.Humanoid.Team then
+				return lplr.Team ~= (ent.Team or ent.Character.Humanoid.Team)
+			end
+		end)
+		return (suc and res) or true
+	end
+	local function customEntity(ent)
+		if not ent:HasTag('NPC') then return end
+		if ent:IsDescendantOf(workspace) then
+			if ent.Name:find("%[BOT%]") then
+				ent.Name = ent.Name:gsub('<font.->', ''):gsub('</font>', ''):gsub('%[BOT%]%s*', '')
+			end
+			entitylib.addEntity(ent, nil, ent:HasTag('NPC') and function(self)
+				return teamcheck(self)
+			end)
+		end
+	end
+
+	entitylib.start = function()
+		oldstart()
+		if entitylib.Running then
+			for _, ent in collectionService:GetTagged('NPC') do
+				customEntity(ent)
+			end
+			table.insert(entitylib.Connections, collectionService:GetInstanceAddedSignal('NPC'):Connect(customEntity))
+			table.insert(entitylib.Connections, collectionService:GetInstanceRemovedSignal('NPC'):Connect(function(ent)
+				entitylib.removeEntity(ent)
+			end))
+		end
+	end
+end)
+
+entitylib.start()
+
 local tabs = {
     Combat = Window:CreateTab('Combat', 'swords'),
     Blatant = Window:CreateTab('Blatant', 'skull'),
@@ -85,9 +125,9 @@ run(function()
             else
                 Rayfield:Notify({
                     Title = "Abyss",
-                    Content = "Velocity won't be disabled after match or rejoin",
+                    Content = "Velocity will be disabled after match or rejoin",
                     Duration = 6.5,
-                    Image = "shield-warning",
+                    Image = "shield-alert",
                 })
             end
         end,
@@ -97,6 +137,11 @@ end)
 
 -- blatant
 tabs.Blatant:CreateSection('Blatant')
+
+--[[run(function()
+    local Aura
+    local Range
+end)]]
 
 -- misc
 tabs.Misc:CreateSection('Misc')
